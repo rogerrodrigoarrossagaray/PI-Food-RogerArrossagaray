@@ -11,7 +11,8 @@ module.exports = async (req, res) => {
       const diets = [...new Set(allRecipes.flatMap(obj => obj.diets))];
   
       const createdDiets = [];
-  
+  //usando un bucle for-of en lugar del map para 
+  //recorrer el array de nombres de dietas
       for (const name of diets) {
         const existingDiet = await Diet.findOne({ where: { name } });
         if (!existingDiet) {

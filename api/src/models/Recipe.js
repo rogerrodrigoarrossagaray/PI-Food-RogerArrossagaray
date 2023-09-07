@@ -18,9 +18,6 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    spoonacularScore: {
-      type: DataTypes.INTEGER
-    },
     healthScore:{
       type: DataTypes.INTEGER,
       allowNull: false
@@ -36,5 +33,5 @@ module.exports = (sequelize) => {
       defaultValue: true,
       allowNull: false
     }
-  });
+  },{timestamps:false});
 };

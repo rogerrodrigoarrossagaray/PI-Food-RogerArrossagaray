@@ -11,7 +11,7 @@ const allInfo = await getAllrecipes();
 try {
     
     if(name){
-        const allRecipe = await allInfo.filter((rec)=> rec.title.toLowerCase().includes(name.toLowerCase()))
+        const allRecipe = allInfo.filter((rec)=> rec.title.toLowerCase().includes(name.toLowerCase()))
         if(allRecipe.length){
             const result = allRecipe.map((rec)=>{
                 return {

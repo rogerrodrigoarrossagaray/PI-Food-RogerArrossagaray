@@ -5,14 +5,14 @@ module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define("diet", {
     id: {
-      type:DataTypes.UUID,
-      defaultValue:DataTypes.UUIDV4,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
     },
     name: {
       type: DataTypes.STRING,
-      alloyNull: false,
+      allowNull: false, // Aquí corrige el error tipográfico "alloyNull" a "allowNull"
     },
-  },{timestamps:false});
+  }, { timestamps: false });
 };
