@@ -11,7 +11,7 @@ const router = Router();
 // Configurar los routers
 router.get("/recipes", getAllRecipesCon)
 router.get("/recipes/:idRecipe", getRecipebyID);
-router.get("/recipes",getRecipebyName);
+router.get("/",getRecipebyName);
 router.post("/recipes",postRecipe);
 router.get("/diets",getDiets);
 

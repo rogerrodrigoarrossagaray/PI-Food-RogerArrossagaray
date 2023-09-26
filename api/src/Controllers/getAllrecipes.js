@@ -30,7 +30,6 @@ module.exports = async () => {
     });
 
     const allRecipes = [...dbRecipes, ...apiRecipes];
-    console.log(allRecipes);
     return allRecipes;
   } catch (error) {
     console.error("Error in getRecipes: " + error);
