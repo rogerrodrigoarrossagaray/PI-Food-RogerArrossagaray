@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { postRecipes } from "../../Redux/actions";
 import validation from "./Validation";
 import styles from "./FormPage.module.css";
-import {  useNavigate } from "react-router-dom";
+import {  Link, useNavigate } from "react-router-dom";
 
 export default function FormPage() {
   const dispatch = useDispatch();
@@ -227,6 +227,9 @@ const navigate = useNavigate();
         <button type="submit" disabled={hasValidationErrors}>
             Create
           </button>
+        <Link to="/home">
+          <button>Home</button>
+        </Link>
       </form>
     </div>
     </div>

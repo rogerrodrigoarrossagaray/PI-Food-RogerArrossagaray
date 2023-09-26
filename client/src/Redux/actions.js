@@ -21,10 +21,10 @@ export function getRecipes() {
 
 
 
-export function filterRecipesByTypeDiet(payload) {
+export function filterRecipesByTypeDiet(type) {
   return {
     type: FILTER_BY_TYPEDIET,
-    payload,
+    payload: type,
   };
 }
 
@@ -44,11 +44,19 @@ export function orderByPuntuation(payload) {
 
 export function getRecipesByName(name) {
   return async function (dispatch) {
-    var json = await axios.get(`http://localhost:3001/recipes?name=${name}`);
+    try {
+      var json = await axios.get(`http://localhost:3001/?name=${name}`);
     return dispatch({
       type: GET_BY_NAME,
       payload: json.data,
     });
+    } catch (error) {
+      return dispatch({
+        type: GET_BY_NAME,
+        payload: error.data,
+      });
+    }
+    
   };
 }
 
@@ -64,7 +72,7 @@ export function getRecipesById(id) {
 
 export function getTypeDiets() {
   return async function (dispatch) {
-    var json = await axios.get(`http://localhost:3001/types`);
+    var json = await axios.get(`http://localhost:3001/diets`);
     return dispatch({
       type: GET_TYPE_DIETS,
       payload: json.data,

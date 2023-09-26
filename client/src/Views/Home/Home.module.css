@@ -103,3 +103,7 @@
   text-decoration: none;
   cursor: pointer;
 }
+.erro{
+  display: flex;
+  justify-content: center;
+}

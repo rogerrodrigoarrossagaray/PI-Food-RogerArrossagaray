@@ -37,3 +37,9 @@
     background-color:rgb(235, 159, 159);
     cursor: pointer;
 }
+.highlighted {
+    /* Estilos para resaltar el botón de la página actual */
+    background-color: #007bff; /* Cambia esto al color deseado */
+    color: #fff; /* Color de texto en el botón resaltado */
+    font-weight: bold; /* Estilo de texto en el botón resaltado */
+  }

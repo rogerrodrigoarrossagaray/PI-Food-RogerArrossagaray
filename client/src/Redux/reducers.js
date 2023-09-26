@@ -3,6 +3,7 @@ export const initialState = {
   allRecipes: [],
   details: {},
   typediets: [],
+  errors: ""
 };
 console.log("esto es el estado type diets", initialState.typediets);
 
@@ -15,22 +16,37 @@ function rootReducer(state = initialState, action) {
         allRecipes: action.payload,
       };
 
-    case "FILTER_BY_TYPEDIET":
-      const allRec = state.allRecipes;
-      console.log(allRec);
-
-      const typeDietFilter =
-        action.payload === "All"
-          ? allRec
-          : allRec.filter((t) =>
-              t.diets.filter((diet) => diet === action.payload)
-            );
-      console.log(action.payload);
-
-      return {
-        ...state,
-        recipes: typeDietFilter,
-      };
+      case "FILTER_BY_TYPEDIET":
+        const allRecipes1 = state.allRecipes; // Copia de respaldo
+        const selectedDiet = action.payload;
+      if(selectedDiet === "All"){
+        return{...state,
+        recipes:allRecipes1}
+      }else{
+         // Filtrar recetas con "diets" como un array de strings
+         const recipesWithArrayStrings = allRecipes1.filter((recipe) => {
+          if (Array.isArray(recipe.diets)) {
+            return recipe.diets.includes(selectedDiet);
+          }
+        });
+      
+        // Filtrar recetas con "diets" como un array de objetos
+        const recipesWithArrayObjects = allRecipes1.filter((recipe) => {
+          if (Array.isArray(recipe.diets)) {
+            return recipe.diets.some((diet) => diet.name === selectedDiet);
+          }
+        });
+      
+        // Combinar los resultados de ambas filtraciones
+        const dietsFiltered = [...recipesWithArrayStrings, ...recipesWithArrayObjects];
+      
+        return {
+          ...state,
+          recipes: dietsFiltered,
+        };
+      }
+      
+      
     case "ORDER_BY_NAME":
       let order =
         action.payload === "asc"
@@ -84,10 +100,18 @@ function rootReducer(state = initialState, action) {
       };
 
     case "GET_BY_NAME":
-      return {
-        ...state,
-        recipes: action.payload,
-      };
+      if(typeof action.payload === "string"){
+        return{
+          ...state ,
+          errors: action.payload
+        }
+      }else{
+        return {
+          ...state,
+          recipes: action.payload,
+        };
+      }
+      
 
     case "GET_BY_ID":
       return {

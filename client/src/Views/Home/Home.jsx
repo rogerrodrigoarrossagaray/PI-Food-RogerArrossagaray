@@ -16,6 +16,7 @@ export default function Home() {
   // Inicialización de estados
   const dispatch = useDispatch();
   const allRecipes = useSelector((state) => state.recipes);
+  const errorSearch = useSelector((state) => state.errors);
   const [search, setSearch] = useState("");
   const [orden, setOrden] = useState("");
   const [order, setOrder] = useState("");
@@ -25,10 +26,6 @@ export default function Home() {
   // Cálculo de índices para paginación
   const indexLastRecipe = currentPage * recipesPerPage;
   const indexFirstRecipe = indexLastRecipe - recipesPerPage;
-  const currentRecipes = allRecipes.slice(
-    indexFirstRecipe,
-    indexLastRecipe
-  );
 
   // Función para cambiar de página
   const paginado = (pageNumber) => {
@@ -48,7 +45,7 @@ export default function Home() {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(getRecipesByName(search));
-    setSearch("");
+    // No restablecemos currentPage aquí
   };
 
   // Función para manejar cambios en el campo de búsqueda
@@ -56,31 +53,26 @@ export default function Home() {
     setSearch(e.target.value);
   };
 
-  // Función para manejar el clic en "Refresh Recipes"
-  const handleRefreshRecipes = (e) => {
-    e.preventDefault();
-    dispatch(getRecipes());
-  };
-
-  // Función para manejar cambios en el filtro por tipo de dieta
+  // Restablecer currentPage a 1 cuando se cambia el filtro de tipo de dieta o la ordenación
   const handleFilterTypeDiet = (event) => {
+    setCurrentPage(1);
     dispatch(filterRecipesByTypeDiet(event.target.value));
   };
 
-  // Función para manejar cambios en la ordenación por nombre
   const handleSortByName = (e) => {
-    e.preventDefault();
-    dispatch(orderByName(e.target.value));
     setCurrentPage(1);
+    dispatch(orderByName(e.target.value));
     setOrden(`Ordenado ${e.target.value}`);
   };
 
-  // Función para manejar cambios en la ordenación por puntuación
   const handleSortByPuntuation = (e) => {
-    e.preventDefault();
-    dispatch(orderByPuntuation(e.target.value));
     setCurrentPage(1);
+    dispatch(orderByPuntuation(e.target.value));
     setOrder(`Ordenado ${e.target.value}`);
+  };
+  const handleRefreshRecipes = (e) => {
+    e.preventDefault();
+    dispatch(getRecipes());
   };
 
   return (
@@ -90,7 +82,6 @@ export default function Home() {
           <input
             type="text"
             placeholder="Buscar..."
-            value={search}
             onChange={handleInputName}
             className={styles.input}
           />
@@ -119,40 +110,46 @@ export default function Home() {
           </select>
         </div>
         <div>
-                <select onChange={handleFilterTypeDiet} className={styles.select}>
-                    <option value="All">All recipes</option>
-                    <option value="gluten free">Gluten Free</option>
-                    <option value="ketogenic">Ketogenic</option>
-                    <option value="vegetarian">Vegetarian </option>
-                    <option value="lacto-vegetarian">Lacto-Vegetarian </option>
-                    <option value="lacto ovo vegetarian">Ovo-Vegetarian</option>
-                    <option value="vegan">Vegan</option>
-                    <option value="pescatarian">Pescatarian</option>
-                    <option value="paleolithic">Paleolithic</option>
-                    <option value="primal">Primal</option>
-                    <option value="whole 30">Whole 30</option>
-                </select>
-                </div>
+          <select onChange={handleFilterTypeDiet} className={styles.select}>
+            <option value="All">All recipes</option>
+            <option value="gluten free">Gluten Free</option>
+            <option value="ketogenic">Ketogenic</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="lacto-vegetarian">Lacto-Vegetarian</option>
+            <option value="lacto ovo vegetarian">Ovo-Vegetarian</option>
+            <option value="vegan">Vegan</option>
+            <option value="pescatarian">Pescatarian</option>
+            <option value="paleolithic">Paleolithic</option>
+            <option value="primal">Primal</option>
+            <option value="whole 30">Whole 30</option>
+          </select>
+        </div>
       </div>
       <div className={styles.paginado}>
         <Paginado
           recipesPerPage={recipesPerPage}
-          allRecipes={allRecipes.length}
+          allRecipes={allRecipes ? allRecipes.length : 0}
           paginado={paginado}
+          currentPage={currentPage} // Pasa el estado currentPage
+          setCurrentPage={setCurrentPage} // Pasa la función setCurrentPage
         />
       </div>
       <div className={styles.cards}>
-  {Array.isArray(currentRecipes) ? (
-    currentRecipes.map((e) => (
-      <Link to={`/recipes/${e.id}`} key={e.id}>
-        <Card name={e.title} image={e.image} diets={e.diets} />
-      </Link>
-    ))
-  ) : (
-    <p>No se encontraron recetas.</p>
-  )}
-</div>
-
+      {allRecipes && allRecipes.length > 0 ? (
+          allRecipes
+            .slice(indexFirstRecipe, indexLastRecipe)
+            .map((e) => (
+              <Link to={`/recipes/${e.id}`} key={e.id}>
+                <Card name={e.title} image={e.image} diets={e.diets} />
+              </Link>
+            ))
+        ) : (
+          <h2 className={styles.erro}>
+            El estado de recetas está vacío. Añade recetas o realiza una
+            búsqueda.
+          </h2>
+        )}
+      </div>
     </div>
   );
 }
